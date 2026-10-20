@@ -1,0 +1,121 @@
+/* Theme tokens: navy & gold. Every color the app uses comes from here (charts and maps read these too).
+   Dark is the default; [data-theme="light"] on <html> switches to the light version. */
+:root {
+  color-scheme: dark;
+  --page: #0E1A33;
+  --header: #0B152B;
+  --surface-1: #13213F;
+  --surface-2: #182A4F;
+  --surface-3: #22365F;
+  --inset: #0C1730;
+  --border: #24365E;
+  --border-strong: #32497A;
+  --divider: #1F3056;
+
+  --text-primary: #EEF2FA;
+  --text-secondary: #B4C0D8;
+  --text-muted: #8B99B8;
+  --grid: #1F3056;
+  --axis: #32497A;
+
+  --accent: #E8C35A;             /* gold: active and important only */
+  --accent-strong: #F3D98C;      /* gold text on navy */
+  --accent-soft: rgba(232, 195, 90, 0.12);
+  --accent-line: rgba(232, 195, 90, 0.45);
+
+  --rep: #D9534F;                /* Republican (fills) */
+  --dem: #3F7FE0;                /* Democratic (fills) */
+  --rep-text: #F08A8A;
+  --dem-text: #8DB6F7;
+  --both: #9B8CF0;
+  --none: #56627F;
+  --mid: #2C3550;                /* diverging midpoint */
+  --inperson: #3F7FE0;
+  --mail: #E8C35A;
+  --past-mid: #3A4B72;           /* individual past elections on the pace chart */
+  --past-pres: #4A4468;
+  --avg-mid: #6AA3E8;
+  --avg-pres: #A99BF2;
+  --pace-lo: #D9772E;
+  --pace-hi: #1FA67A;
+  --nodata-a: #13213F;
+  --nodata-b: #24365E;
+  --map-stroke: #0C1630;
+
+  --seq-0: #162A52; --seq-1: #1F4A8A; --seq-2: #2F6FC4; --seq-3: #4E8BD6; --seq-4: #8DB8EE; --seq-5: #CFE1FB;
+
+  --good: #4FD892;
+  --good-dot: #3CCB7F;
+  --warning: #F2B33D;
+  --critical: #E5605B;
+  --info: #4B8CF0;
+
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --radius: 14px;
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --page: #F6F4EE;
+  --header: #13203F;
+  --surface-1: #FFFFFF;
+  --surface-2: #F3F5F9;
+  --surface-3: #E6EAF1;
+  --inset: #F1F4F9;
+  --border: #DCE2EC;
+  --border-strong: #C5CEDD;
+  --divider: #E6EAF1;
+
+  --text-primary: #13203F;
+  --text-secondary: #3F4B66;
+  --text-muted: #5B6782;
+  --grid: #E6EAF1;
+  --axis: #C5CEDD;
+
+  --accent: #C9A23A;
+  --accent-strong: #8A6510;
+  --accent-soft: rgba(201, 162, 58, 0.14);
+  --accent-line: #D9B44A;
+
+  --rep: #C8423F;
+  --dem: #2F6BC8;
+  --rep-text: #B3302D;
+  --dem-text: #1F5AB5;
+  --both: #6F5FD0;
+  --none: #9AA4B8;
+  --mid: #E4E7EE;
+  --inperson: #2F6BC8;
+  --mail: #C9A23A;
+  --past-mid: #C9D2E2;
+  --past-pres: #D6CFEA;
+  --avg-mid: #2F6BC8;
+  --avg-pres: #6F5FD0;
+  --pace-lo: #C4621B;
+  --pace-hi: #13805C;
+  --nodata-a: #FFFFFF;
+  --nodata-b: #DCE2EC;
+  --map-stroke: #FFFFFF;
+
+  --seq-0: #E6ECF6; --seq-1: #B9CDEA; --seq-2: #7FA6DC; --seq-3: #4F83CC; --seq-4: #2B5FAA; --seq-5: #163D7A;
+
+  --good: #1E8A50;
+  --good-dot: #22A863;
+  --warning: #B7791F;
+  --critical: #C23B37;
+  --info: #2F6BC8;
+  --shadow: 0 10px 28px rgba(19, 32, 63, 0.16);
+}
+
+/* header colors (dark default; light mode overrides below) */
+:root {
+  --hdr-bg: #0B152B; --hdr-border: #1E2F55; --hdr-text: #EEF2FA; --hdr-text-2: #B4C0D8; --hdr-muted: #8B99B8;
+  --hdr-chip-bg: rgba(19,33,63,.6); --hdr-chip-border: #2A3E68; --hdr-gold: #E8C35A; --hdr-gold-strong: #F3D98C;
+  --hdr-rep: #F08A8A; --hdr-dem: #8DB6F7;
+}
+:root[data-theme="light"] {
+  --hdr-bg: #FFFFFF; --hdr-border: #DCE2EC; --hdr-text: #13203F; --hdr-text-2: #3F4B66; --hdr-muted: #5B6782;
+  --hdr-chip-bg: #F6F4EE; --hdr-chip-border: #DCE2EC; --hdr-gold: #C9A23A; --hdr-gold-strong: #8A6510;
+  --hdr-rep: #B3302D; --hdr-dem: #1F5AB5;
+}

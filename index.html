@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Texas Election Tracker</title>
+  <meta name="description" content="Live early-voting turnout across all 254 Texas counties for the 2026 U.S. Senate race.">
+  <link rel="icon" type="image/png" sizes="256x256" href="icon-256.png">
+  <link rel="apple-touch-icon" href="icon-256.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0B152B">
+  <script>try { if (localStorage.getItem("theme") === "light") document.documentElement.dataset.theme = "light"; } catch (e) {}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap">
+  <link rel="stylesheet" href="css/theme.css?v=c7fe3cd4">
+  <link rel="stylesheet" href="css/app.css?v=f6b4eac7">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="brand">
+          <svg class="brand-mark" width="46" height="44" viewBox="0 0 100 95" role="img" aria-label="Texas"><path d="M 27.82 17.11 27.82 1 50.65 1.01 50.67 18.8 58.51 21.95 65.8 24.86 77.81 26.33 90.12 26.51 95.31 27.9 95.34 38.21 98.65 48.89 99 51.95 96.74 60.25 93 62.86 88.01 62.92 87.26 67 77.81 72.85 72.83 77.53 70.54 82.24 71.46 89.48 69.82 94.15 61.25 90.79 54.74 82.35 49.06 74.49 44.67 65.6 37.43 60.96 30.8 61.38 26.04 67.82 16.83 62.19 13.28 53.65 5.66 47.06 1 41.67 27.65 40.91 27.71 29.36 Z" fill="none" stroke-width="3.5" stroke-linejoin="round"></path></svg>
+          <div class="brand-text">
+            <h1>Texas Election Tracker</h1>
+            <div class="title-rule"></div>
+            <div class="race">U.S. Senate · <span class="r">Ken Paxton (R)</span> vs. <span class="d">James Talarico (D)</span> · Early voting Oct 19–30</div>
+          </div>
+        </div>
+        <div class="header-tools">
+          <div class="fresh">
+            <div class="fresh-line"><span class="dot" id="live-dot"></span>Updated <span class="when num" id="updated-at">—</span></div>
+            <div class="sub" id="updated-sub">Loading…</div>
+          </div>
+          <div class="countdown" id="countdown" hidden></div>
+          <button class="hdr-btn" id="refresh-btn" hidden>Check now</button>
+          <button class="icon-btn" id="theme-btn" aria-label="Switch to light mode"></button>
+        </div>
+      </div>
+      <nav class="tabs" aria-label="Sections">
+        <button class="tab active" data-view="ev">Early Vote</button>
+        <button class="tab" data-view="counties">Counties</button>
+        <button class="tab" data-view="eday">Election Day</button>
+      </nav>
+    </div>
+  </header>
+  <div id="banner"></div>
+
+  <main>
+    <!-- ================= EARLY VOTE ================= -->
+    <section class="view active" id="view-ev">
+      <div class="grid kpis" id="kpis" aria-label="Headline numbers"></div>
+
+      <div class="row-map">
+        <div class="card map-card">
+          <div class="card-head">
+            <div><h2 id="map-title">Texas by county</h2><div class="hint" id="map-hint">Early ballots as a share of registered voters</div></div>
+          </div>
+          <div class="map-controls">
+            <div class="seg" id="map-mode">
+              <button data-mode="turnout" class="active">Turnout %</button>
+              <button data-mode="votes">Votes cast</button>
+              <button data-mode="lean">Primary lean</button>
+              <button data-mode="day">Latest day</button>
+              <button data-mode="pace">Pace vs. midterms</button>
+              <button data-mode="sen24">2024 Senate</button>
+            </div>
+            <div class="seg" id="prec-mode" hidden>
+              <button data-mode="ballots" class="active">Ballots</button>
+              <button data-mode="lean">Primary lean</button>
+              <button data-mode="mail">Mail share</button>
+              <button data-mode="noprim">No-primary share</button>
+              <button data-mode="share24">% of 2024 vote</button>
+              <button data-mode="sen24">2024 Senate</button>
+            </div>
+          </div>
+          <div class="map-wrap"><button class="btn map-back" id="map-back" hidden>← Back to Texas</button><div id="map"></div></div>
+          <div class="map-foot">
+            <div class="legend" id="map-legend"></div>
+            <div class="zoom-bar">
+              <span class="zoom-label">Zoom</span>
+              <button class="btn zoom-btn" id="zoom-out" aria-label="Zoom out">−</button>
+              <input type="range" id="zoom-range" min="1" max="10" step="0.1" value="1" aria-label="Map zoom">
+              <button class="btn zoom-btn" id="zoom-in" aria-label="Zoom in">+</button>
+              <span class="zoom-val num" id="zoom-val">1.0×</span>
+              <button class="btn" id="zoom-reset">Reset</button>
+            </div>
+          </div>
+          <div class="muted zoom-tip">Click a county for its precincts · scroll over the map to zoom · drag to move around</div>
+        </div>
+        <div class="card detail map-side" id="map-side" hidden></div>
+        <div class="side-col" id="side-charts">
+          <div class="card">
+            <h2>Largest counties</h2>
+            <ul class="mini-list" id="side-largest"></ul>
+            <button class="more-link" id="side-all">All 254 counties →</button>
+          </div>
+          <div class="card">
+            <h2>Who's voting</h2>
+            <div class="hint" style="margin-bottom:12px">Early voters by 2026 primary history</div>
+            <div id="side-comp"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Pace vs. past elections</h2>
+            <div class="hint" id="pace-hint">Share of each election's registered voters who had voted early, by day of early voting</div></div>
+          <div class="seg" id="pace-basis">
+            <button data-basis="common" class="active">15 largest counties · 2014–2024</button>
+            <button data-basis="full">All 254 counties · 2020–2024</button>
+          </div>
+        </div>
+        <div class="pace-layout">
+          <div class="pace-stats" id="pace-stats"></div>
+          <div><div class="chart" id="chart-pace"></div><div class="legend" id="pace-legend"></div></div>
+        </div>
+        <div class="caveat" id="pace-caveat"></div>
+      </div>
+
+      <div class="row-2">
+        <div class="card">
+          <h2>Cumulative early vote</h2>
+          <div class="hint" id="cum-hint">Statewide ballots by day, in person and mail</div>
+          <div class="chart" id="chart-cum"></div>
+          <div class="legend" style="margin-top:10px"><span><i class="sw" style="background:var(--inperson)"></i>In person</span><span><i class="sw" style="background:var(--mail)"></i>Mail</span></div>
+        </div>
+        <div class="card">
+          <h2>In-person votes each day</h2>
+          <div class="hint">Ballots cast in person on each early-voting day</div>
+          <div class="chart" id="chart-daily"></div>
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="card">
+          <h2>Who's voting — 2026 primary history</h2>
+          <div class="hint">Early voters matched to the March primary and May runoff voter lists by voter ID, weighted to each county's ballots</div>
+          <div class="stack" id="comp-bar"></div>
+          <div class="comp-legend" id="comp-legend"></div>
+          <div class="pool" id="pool"></div>
+          <div class="caveat">Texas has no party registration. "Primary lean" shows which party's 2026 primary a voter chose. It does not show how anyone is voting for Senate, and most general-election voters skipped the primaries.</div>
+        </div>
+        <div class="card">
+          <h2>Each day's new voters by primary history</h2>
+          <div class="hint">Share of the voters added each day who voted in each party's 2026 primary</div>
+          <div class="chart" id="chart-comp-daily"></div>
+          <div class="legend" id="comp-daily-legend" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div class="card ext-card">
+        <h2>Extended primary history (2020–2026) — lower accuracy</h2>
+        <div class="hint">Voters who skipped the 2026 primaries, tagged by the most recent 2020, 2022 or 2024 primary they voted in early</div>
+        <div id="ext"></div>
+        <div class="caveat"><b>Read with care:</b> this is less reliable than the 2026-only view above. Older primary choices are weaker signals: people switch parties, cross over to vote in the other party's primary, and move. The 2020–2024 lists also cover <b>early</b> primary voters only; the state didn't publish election-day primary voter lists for those years. It still shows nothing about how anyone is voting for Senate.</div>
+      </div>
+
+      <div class="card">
+        <h2>Regions</h2>
+        <div class="hint">County groupings: Big 5 Urban, Suburban Ring, Mid-Size Metros, Rio Grande Valley, Border &amp; West, Rural &amp; Small Town</div>
+        <div id="regions"></div>
+      </div>
+
+      <div class="grid leaders" id="leaders"></div>
+
+      <div class="card">
+        <h2>Data sources check — state vs. county websites</h2>
+        <div class="hint">For the largest counties the tracker also reads each county's own report. Differences show how far behind the state file is.</div>
+        <div id="sources"></div>
+      </div>
+    </section>
+
+    <!-- ================= COUNTIES ================= -->
+    <section class="view" id="view-counties">
+      <div class="page-head">
+        <div>
+          <h1>All 254 counties</h1>
+          <div class="muted" id="county-count" style="margin-top:6px"></div>
+        </div>
+        <div class="toolbar">
+          <input type="search" id="county-search" placeholder="Search counties" aria-label="Search counties">
+          <select id="county-region" aria-label="Region"><option value="">All regions</option></select>
+        </div>
+      </div>
+      <div class="counties-layout">
+        <div class="card" style="padding:8px 10px">
+          <div class="table-scroll"><table id="county-table"></table></div>
+        </div>
+        <div class="card detail" id="county-detail">
+          <h2>County detail</h2>
+          <div class="hint">Select a county from the table or the map</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ELECTION DAY ================= -->
+    <section class="view" id="view-eday">
+      <div class="eday-status" id="eday-status"></div>
+      <div class="race-picker" id="race-picker" role="tablist" aria-label="Races"></div>
+
+      <div class="row-eday">
+        <div class="card race-main" id="race-main"></div>
+        <div class="card eday-map-card">
+          <div class="card-head">
+            <div><h2 id="eday-map-title">Results by county</h2><div class="hint" id="eday-map-hint">Leading candidate's margin in each county</div></div>
+            <div class="seg" id="eday-map-mode">
+              <button data-mode="margin" class="active">Margin</button>
+              <button data-mode="shift">Shift from 2024</button>
+              <button data-mode="reporting">Votes in</button>
+            </div>
+          </div>
+          <div id="eday-map"></div>
+          <div class="legend" id="eday-legend"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Counties</h2><div class="hint" id="eday-table-hint">Largest counties by votes counted</div></div>
+          <div class="toolbar"><input type="search" id="eday-search" placeholder="Search counties" aria-label="Search counties"></div>
+        </div>
+        <div class="table-scroll eday-table-wrap"><table id="eday-table"></table></div>
+        <button class="more-link" id="eday-more">Show all counties</button>
+      </div>
+
+      <div class="caveat eday-foot">Unofficial results from the Texas Secretary of State's election-night returns, checked for consistency on every update. Race calls come from AP or Decision Desk HQ and are entered by hand. Backup sources:
+        <a href="https://goelect.txelections.civixapps.com/ivis-enr-ui/races" target="_blank" rel="noopener">Texas SOS results</a> ·
+        <a href="https://decisiondeskhq.com/" target="_blank" rel="noopener">Decision Desk HQ</a> ·
+        <a href="https://apnews.com/projects/election-results-2026/" target="_blank" rel="noopener">AP</a></div>
+    </section>
+  </main>
+
+  <footer>
+    Sources: Texas Secretary of State (unofficial early-voting turnout, voter lists and 2014–2024 archives), county election offices (Harris, Dallas, Tarrant, Bexar, Travis, Collin, Denton, Fort Bend, Williamson, El Paso, Hidalgo, Galveston, Nueces, McLennan) and the Texas Legislative Council (precinct maps and 2024 results). Numbers are unofficial and counties revise them. Turnout is the share of registered voters. Totals only — no voter names or IDs are published.
+  </footer>
+
+  <div class="tooltip" id="tooltip"></div>
+  <script src="vendor/d3.min.js"></script>
+  <script src="js/app.js?v=e081c195"></script>
+</body>
+</html>

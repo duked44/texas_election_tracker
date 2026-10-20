@@ -1,0 +1,16 @@
+{
+ "name": "Texas Early Vote Tracker",
+ "short_name": "TX Early Vote",
+ "start_url": "./",
+ "display": "standalone",
+ "background_color": "#0b0c0e",
+ "theme_color": "#08090a",
+ "icons": [
+  {
+   "src": "icon-256.png",
+   "sizes": "256x256",
+   "type": "image/png",
+   "purpose": "any"
+  }
+ ]
+}
